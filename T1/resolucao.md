@@ -1,5 +1,5 @@
 
-## a)
+### a)
 ```prolog
 estado_inicial((1, 6), [(0,2), (1,0), (1, 2), (1, 6), (3, 3), (3, 4), (3, 5)]).
 estado_final((0, 4), _).
@@ -18,10 +18,70 @@ op((X, Y), desce, (X, B), 1) :-
 
 op((X, Y), direita, (A, Y), 1) :-
     tamanho(T), X < T, A is X + 1, \+ bloqueado((A,Y)), nao_percorridos((A,Y)).
+h1((X, Y), R):- 
+    estado_final(PF),
+    distancia((X, Y), PF, R).
+
+h2(P1, D) :- 
+    estado_final(PF),  
+    euclidean_distance(P1, PF, D).
+
+% distância de Manhattan
+distancia((X, Y), (W, Z), D):-
+    X1 is X-W,
+    abs(X1, AX),
+    Y1 is Y-Z,
+    abs(Y1, AY),
+    D is AX+AY.
+
+euclidean_distance((X1, Y1), (X2, Y2), R) :- R is sqrt((X2-X1)^2 + (Y2-Y1)^2).
+
+abs(X, X):- X > 0.
+abs(X, R):- R is -X.
+
+pesquisa_a([no(E,Pai,Op,C,HC,P)|_],no(E,Pai,Op,C,HC,P)) :- estado_final(E), inc.
+pesquisa_a([E|R],Sol) :- 
+    inc, expande_a(E,Lseg),
+    insere_ordenado(Lseg,R,Resto),
+    length(Resto,N), actmax(N),
+    pesquisa_a(Resto,Sol).
+
+expande_a(no(E,Pai,Op,C,HC,P),L) :- 
+    findall(no(En,no(E,Pai,Op,C,HC,P),Opn,Cnn,HCnn,P1),
+	(op(E,Opn,En,Cn), P1 is P+1, Cnn is Cn+C, h2(En,H), HCnn is Cnn+H), L).
+
+insere_ordenado([],L,L).
+insere_ordenado([A|T], L, LF):- 
+	ins_ord(A,L,L1), insere_ordenado(T, L1, LF).
+
+ins_ord(E, [], [E]).
+ins_ord(no(E,Pai,Op,C,CH,P), [no(E1,Pai1,Op1,C1,CH1,P1)|T], [no(E,Pai,Op,C,CH,P),no(E1,Pai1,Op1,C1,CH1,P1)|T]) :- CH =< CH1.
+ins_ord(no(E,Pai,Op,C,CH,P), [no(E1,Pai1,Op1,C1,CH1,P1)|T], [no(E1,Pai1,Op1,C1,CH1,P1)|T1]) :- ins_ord(no(E,Pai,Op,C,CH,P), T, T1).	
+
+escreve_seq_solucao_a(no(E,Pai,Op,Custo,_HC,Prof)) :-
+    write(custo(Custo)),nl,
+    write(profundidade(Prof)),nl,
+    escreve_seq_accoes_a(no(E,Pai,Op,_,_,_)).
+
+escreve_seq_accoes_a([]).
+escreve_seq_accoes_a(no(E,Pai,Op,_,_,_)) :- escreve_seq_accoes_a(Pai), write(e(Op,E)),nl.
+
+pesquisa_a :-
+    assertz(max_memoria(0)), assertz(nos(0)),
+    estado_inicial(S0),
+	pesquisa_a([no(S0,[],[],0,0,0)], Sol), nl,
+    max_memoria(M), write(lista(M)), nl,
+    escreve_seq_solucao_a(Sol), nl,
+    write('Estados visitados: '),
+    retract(nos(X)),
+    write(X), nl,
+    write('Máximo em memória: '),
+    retract(max_memoria(Y)),
+    write(Y).
 
 ```
 
-## b)
+### b)
 ```prolog
 :- dynamic(max_memoria/1).
 :- dynamic(nos/1).
@@ -69,11 +129,87 @@ pesquisa_p:-
     write(Y).
 ```
 
-## c)
+### c)
 + i. 15.
 + ii. 11.
 
-## d)
+### d)
 As duas heurísticas que propomos são: Distância de Manhattan e a Distância Euclidiana.
 
-## e)
+### e)
+``` prolog 
+h1((X, Y), R):- 
+    estado_final(PF),
+    distancia((X, Y), PF, R).
+
+h2(P1, D) :- 
+    estado_final(PF),  
+    euclidean_distance(P1, PF, D).
+
+% distância de Manhattan
+distancia((X, Y), (W, Z), D):-
+    X1 is X-W,
+    abs(X1, AX),
+    Y1 is Y-Z,
+    abs(Y1, AY),
+    D is AX+AY.
+
+euclidean_distance((X1, Y1), (X2, Y2), R) :- R is sqrt((X2-X1)^2 + (Y2-Y1)^2).
+
+abs(X, X):- X > 0.
+abs(X, R):- R is -X.
+
+pesquisa_a([no(E,Pai,Op,C,HC,P)|_],no(E,Pai,Op,C,HC,P)) :- estado_final(E), inc.
+pesquisa_a([E|R],Sol) :- 
+    inc, expande_a(E,Lseg),
+    insere_ordenado(Lseg,R,Resto),
+    length(Resto,N), actmax(N),
+    pesquisa_a(Resto,Sol).
+
+expande_a(no(E,Pai,Op,C,HC,P),L) :- 
+    findall(no(En,no(E,Pai,Op,C,HC,P),Opn,Cnn,HCnn,P1),
+	(op(E,Opn,En,Cn), P1 is P+1, Cnn is Cn+C, h2(En,H), HCnn is Cnn+H), L).
+
+insere_ordenado([],L,L).
+insere_ordenado([A|T], L, LF):- 
+	ins_ord(A,L,L1), insere_ordenado(T, L1, LF).
+
+ins_ord(E, [], [E]).
+ins_ord(no(E,Pai,Op,C,CH,P), [no(E1,Pai1,Op1,C1,CH1,P1)|T], [no(E,Pai,Op,C,CH,P),no(E1,Pai1,Op1,C1,CH1,P1)|T]) :- CH =< CH1.
+ins_ord(no(E,Pai,Op,C,CH,P), [no(E1,Pai1,Op1,C1,CH1,P1)|T], [no(E1,Pai1,Op1,C1,CH1,P1)|T1]) :- ins_ord(no(E,Pai,Op,C,CH,P), T, T1).	
+
+escreve_seq_solucao_a(no(E,Pai,Op,Custo,_HC,Prof)) :-
+    write(custo(Custo)),nl,
+    write(profundidade(Prof)),nl,
+    escreve_seq_accoes_a(no(E,Pai,Op,_,_,_)).
+
+escreve_seq_accoes_a([]).
+escreve_seq_accoes_a(no(E,Pai,Op,_,_,_)) :- escreve_seq_accoes_a(Pai), write(e(Op,E)),nl.
+
+pesquisa_a :-
+    assertz(max_memoria(0)), assertz(nos(0)),
+    estado_inicial(S0),
+	pesquisa_a([no(S0,[],[],0,0,0)], Sol), nl,
+    max_memoria(M), write(lista(M)), nl,
+    escreve_seq_solucao_a(Sol), nl,
+    write('Estados visitados: '),
+    retract(nos(X)),
+    write(X), nl,
+    write('Máximo em memória: '),
+    retract(max_memoria(Y)),
+    write(Y).
+```
+### f)
+
+#### Distância de Manhattan
+* i)
+    * 47
+* ii)
+    * 56
+
+#### Distância Euclidiana
+* i)
+    * 21
+* ii)
+    * 11
+

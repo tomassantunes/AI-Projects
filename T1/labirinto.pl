@@ -141,3 +141,5 @@ pesquisa_a :-
     write('Máximo em memória: '),
     retract(max_memoria(Y)),
     write(Y).
+
+
