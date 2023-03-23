@@ -384,16 +384,16 @@ pesquisa_g :-
     write(Y).
 ```
 
-### f)A
+### f)
 
 #### Distância Manhattan
 * i)
-    * 6
+    * 269
 * ii)
-    * 12
+    * 38
 
 #### Distância Euclidiana
 * i)
-    * 6
+    * 269
 * ii)
-    * 12
+    * 38
