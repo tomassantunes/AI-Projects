@@ -120,10 +120,10 @@ ins_ord(no(E,Pai,Op,C,CH,P), [no(E1,Pai1,Op1,C1,CH1,P1)|T], [no(E1,Pai1,Op1,C1,C
 escreve_seq_solucao_g(no(E,Pai,Op,Custo,_HC,Prof)) :-
     write(custo(Custo)),nl,
     write(profundidade(Prof)),nl,
-    escreve_seq_accoes_a(no(E,Pai,Op,_,_,_)).
+    escreve_seq_accoes_g(no(E,Pai,Op,_,_,_)).
 
 escreve_seq_accoes_g([]).
-escreve_seq_accoes_g(no(E,Pai,Op,_,_,_)) :- escreve_seq_accoes_a(Pai), write(e(Op,E)),nl.
+escreve_seq_accoes_g(no(E,Pai,Op,_,_,_)) :- escreve_seq_accoes_g(Pai), write(e(Op,E)),nl.
 
 pesquisa_g :-
     assertz(max_memoria(0)), assertz(nos(0)),
