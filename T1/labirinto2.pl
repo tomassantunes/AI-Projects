@@ -1,6 +1,6 @@
 tamanho(6).
 
-estado_inicial((4, 6, 4, 5)).
+estado_inicial((1, 6, 1, 5)).
 estado_final((_, _, 4, 0)).
 
 bloqueado((0,1)).
@@ -121,6 +121,14 @@ pesquisa_p :-
     write(Y).
 
 % e)
+:- dynamic(percorridos/1).
+
+nao_percorridos(A) :- 
+    \+ percorridos(A).
+
+h(h1, A, B) :- h1(A, B).
+h(h2, A, B) :- h2(A, B).
+
 h1(A, B) :- estado_final(E), distancia_manhattan(A, E, B).
 h2(A, B) :- estado_final(E), euclidean_distance(A, E, B).
 
@@ -134,15 +142,15 @@ euclidean_distance((_, _, X, Y), (_, _, A, B), R) :- R is sqrt((X-A)^2 + (Y-B)^2
 abs(X, X):- X > 0.
 abs(X, R):- R is -X.
 
-pesquisa_g([no(E,Pai,Op,C,HC,P)|_],no(E,Pai,Op,C,HC,P)) :- estado_final(E).
-pesquisa_g([E|R],Sol) :- 
-    inc, expande_g(E,Lseg),
+pesquisa_g(_, [no(E,Pai,Op,C,HC,P)|_], no(E,Pai,Op,C,HC,P)) :- estado_final(E), inc.
+pesquisa_g(HEUR, [E|R], Sol) :- 
+    inc, expande_g(HEUR, E,Lseg), assertz(percorridos(E)),
     insere_ordenado(Lseg,R,Resto), length(Resto,N), actmax(N),
-    pesquisa_g(Resto,Sol).
+    pesquisa_g(HEUR, Resto, Sol).
 
-expande_g(no(E,Pai,Op,C,HC,P),L) :- 
+expande_g(HEUR, no(E,Pai,Op,C,HC,P), L) :- 
     findall(no(En,no(E,Pai,Op,C,HC,P),Opn,Cnn,H,P1),
-    (op(E,Opn,En,Cn), P1 is P+1, Cnn is Cn+C, h1(En,H)), L).
+    (op(E,Opn,En,Cn), nao_percorridos(no(En,_,_,_,_,_)), P1 is P+1, Cnn is Cn+C, h(HEUR, En,H)), L).
 
 insere_ordenado([],L,L).
 insere_ordenado([A|T], L, LF) :- 
@@ -152,19 +160,31 @@ ins_ord(E, [], [E]).
 ins_ord(no(E,Pai,Op,C,CH,P), [no(E1,Pai1,Op1,C1,CH1,P1)|T], [no(E,Pai,Op,C,CH,P),no(E1,Pai1,Op1,C1,CH1,P1)|T]) :- CH =< CH1.
 ins_ord(no(E,Pai,Op,C,CH,P), [no(E1,Pai1,Op1,C1,CH1,P1)|T], [no(E1,Pai1,Op1,C1,CH1,P1)|T1]) :- ins_ord(no(E,Pai,Op,C,CH,P), T, T1).	
 
-escreve_seq_solucao_a(no(E,Pai,Op,Custo,_HC,Prof)) :-
+escreve_seq_solucao_g(no(E,Pai,Op,Custo,_HC,Prof)) :-
     write(custo(Custo)),nl,
     write(profundidade(Prof)),nl,
     escreve_seq_accoes_a(no(E,Pai,Op,_,_,_)).
 
-escreve_seq_accoes_a([]).
-escreve_seq_accoes_a(no(E,Pai,Op,_,_,_)) :- escreve_seq_accoes_a(Pai), write(e(Op,E)),nl.
+escreve_seq_accoes_g([]).
+escreve_seq_accoes_g(no(E,Pai,Op,_,_,_)) :- escreve_seq_accoes_g(Pai), write(e(Op,E)),nl.
 
 pesquisa_g :-
+    write('Pesquisa greedy com distância de Manhattan.'), nl,
     assertz(max_memoria(0)), assertz(nos(0)),
     estado_inicial(S0),
-    pesquisa_g([no(S0,[],[],0,0,0)], Sol), nl,
-    escreve_seq_solucao_a(Sol), nl,
+    pesquisa_g(h1, [no(S0,[],[],0,0,0)], Sol1), nl,
+    escreve_seq_solucao_g(Sol1), nl,
+    write('Estados visitados: '),
+    retract(nos(X)),
+    write(X), nl,
+    write('Máximo em memória: '),
+    retract(max_memoria(Y)),
+    write(Y), nl,
+    write('Pesquisa greedy com distância Euclidiana.'), nl,
+    retractall(max_memoria(_)), retractall(percorridos(_)), retractall(nos(_)),
+    assertz(max_memoria(0)), assertz(nos(0)),
+    pesquisa_g(h2, [no(S0,[],[],0,0,0)], Sol2), nl,
+    escreve_seq_solucao_g(Sol2), nl,
     write('Estados visitados: '),
     retract(nos(X)),
     write(X), nl,

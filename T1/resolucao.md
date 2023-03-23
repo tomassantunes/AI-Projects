@@ -1,11 +1,28 @@
 ## 1.
 ### a)
 ```prolog
-estado_inicial((1, 6), [(0,2), (1,0), (1, 2), (1, 6), (3, 3), (3, 4), (3, 5)]).
-estado_final((0, 4), _).
+:- dynamic(percorridos/1).
 
-verificar_limite(_, []).
-verificar_limite(A, [B|L]) :- \+ A = B, verificar_limite(A, L).
+% 0 - 6
+tamanho(6).
+
+% a)
+estado_inicial((6, 1)).
+estado_final((0, 4)).
+
+bloqueado((0,2)).
+bloqueado((1,0)).
+bloqueado((1,2)).
+bloqueado((1,6)).
+bloqueado((3,3)).
+bloqueado((3,4)).
+bloqueado((3,5)).
+
+percorridos((6,1)).
+
+nao_percorridos(A) :- 
+    \+ percorridos(A),
+    assertz(percorridos(A)).
 
 op((X, Y), sobe, (X, B), 1) :-
     tamanho(T), Y < T, B is Y + 1, \+ bloqueado((X,B)), nao_percorridos((X,B)).
@@ -18,6 +35,7 @@ op((X, Y), desce, (X, B), 1) :-
 
 op((X, Y), direita, (A, Y), 1) :-
     tamanho(T), X < T, A is X + 1, \+ bloqueado((A,Y)), nao_percorridos((A,Y)).
+
 ```
 
 ### b)
@@ -55,6 +73,7 @@ escreve_seq_accoes(no(E,Pai,Op,_,_)):- escreve_seq_accoes(Pai), write(e(Op,E)),n
 insere_inicio(X, Y, L) :- append(X, Y, L).
 insere_fim(X, Y, L) :- append(Y, X, L).
 
+% Algoritmo de pesquisa em Profundidade
 pesquisa_p:-
     estado_inicial(S0),
 	pesquisa_profundidade([no(S0,[],[],0,0)], Sol), nl,
@@ -126,6 +145,7 @@ escreve_seq_solucao_g(no(E,Pai,Op,Custo,_HC,Prof)) :-
 escreve_seq_accoes_g([]).
 escreve_seq_accoes_g(no(E,Pai,Op,_,_,_)) :- escreve_seq_accoes_a(Pai), write(e(Op,E)),nl.
 
+% Algoritmo de pesquisa Greedy
 pesquisa_g :-
     assertz(max_memoria(0)), assertz(nos(0)),
     estado_inicial(S0),
@@ -266,6 +286,7 @@ escreve_seq_accoes(no(E,Pai,Op,_,_)) :- escreve_seq_accoes(Pai), write(e(Op,E)),
 insere_inicio(X, Y, L) :- append(X, Y, L).
 insere_fim(X, Y, L) :- append(Y, X, L).
 
+% Algoritmo de pesquisa em Profundidade
 pesquisa_p :-
     assertz(max_memoria(0)), assertz(nos(0)),
     estado_inicial(S0),
@@ -289,4 +310,90 @@ pesquisa_p :-
 As duas heurísticas que propomos são: Distância de Manhattan e a Distância Euclidiana.
 
 ### e)
+```prolog
+:- dynamic(percorridos/1).
 
+nao_percorridos(A) :- 
+    \+ percorridos(A).
+
+h(h1, A, B) :- h1(A, B).
+h(h2, A, B) :- h2(A, B).
+
+h1(A, B) :- estado_final(E), distancia_manhattan(A, E, B).
+h2(A, B) :- estado_final(E), euclidean_distance(A, E, B).
+
+distancia_manhattan((_, _, X, Y), (_, _, W, Z), D) :-
+    X1 is abs(X - W),
+    Y1 is abs(Y - Z),
+    D is X1+Y1.
+
+euclidean_distance((_, _, X, Y), (_, _, A, B), R) :- R is sqrt((X-A)^2 + (Y-B)^2).
+
+abs(X, X):- X > 0.
+abs(X, R):- R is -X.
+
+pesquisa_g(_, [no(E,Pai,Op,C,HC,P)|_], no(E,Pai,Op,C,HC,P)) :- estado_final(E), inc.
+pesquisa_g(HEUR, [E|R], Sol) :- 
+    inc, expande_g(HEUR, E,Lseg), assertz(percorridos(E)),
+    insere_ordenado(Lseg,R,Resto), length(Resto,N), actmax(N),
+    pesquisa_g(HEUR, Resto, Sol).
+
+expande_g(HEUR, no(E,Pai,Op,C,HC,P), L) :- 
+    findall(no(En,no(E,Pai,Op,C,HC,P),Opn,Cnn,H,P1),
+    (op(E,Opn,En,Cn), nao_percorridos(no(En,_,_,_,_,_)), P1 is P+1, Cnn is Cn+C, h(HEUR, En,H)), L).
+
+insere_ordenado([],L,L).
+insere_ordenado([A|T], L, LF) :- 
+    ins_ord(A,L,L1), insere_ordenado(T, L1, LF).
+
+ins_ord(E, [], [E]).
+ins_ord(no(E,Pai,Op,C,CH,P), [no(E1,Pai1,Op1,C1,CH1,P1)|T], [no(E,Pai,Op,C,CH,P),no(E1,Pai1,Op1,C1,CH1,P1)|T]) :- CH =< CH1.
+ins_ord(no(E,Pai,Op,C,CH,P), [no(E1,Pai1,Op1,C1,CH1,P1)|T], [no(E1,Pai1,Op1,C1,CH1,P1)|T1]) :- ins_ord(no(E,Pai,Op,C,CH,P), T, T1).	
+
+escreve_seq_solucao_g(no(E,Pai,Op,Custo,_HC,Prof)) :-
+    write(custo(Custo)),nl,
+    write(profundidade(Prof)),nl,
+    escreve_seq_accoes_a(no(E,Pai,Op,_,_,_)).
+
+escreve_seq_accoes_g([]).
+escreve_seq_accoes_g(no(E,Pai,Op,_,_,_)) :- escreve_seq_accoes_g(Pai), write(e(Op,E)),nl.
+
+% Algoritmo de pesquisa Greedy
+pesquisa_g :-
+    write('Pesquisa greedy com distância de Manhattan.'), nl,
+    assertz(max_memoria(0)), assertz(nos(0)),
+    estado_inicial(S0),
+    pesquisa_g(h1, [no(S0,[],[],0,0,0)], Sol1), nl,
+    escreve_seq_solucao_g(Sol1), nl,
+    write('Estados visitados: '),
+    retract(nos(X)),
+    write(X), nl,
+    write('Máximo em memória: '),
+    retract(max_memoria(Y)),
+    write(Y), nl,
+    write('Pesquisa greedy com distância Euclidiana.'), nl,
+    retractall(max_memoria(_)), retractall(percorridos(_)), retractall(nos(_)),
+    assertz(max_memoria(0)), assertz(nos(0)),
+    pesquisa_g(h2, [no(S0,[],[],0,0,0)], Sol2), nl,
+    escreve_seq_solucao_g(Sol2), nl,
+    write('Estados visitados: '),
+    retract(nos(X)),
+    write(X), nl,
+    write('Máximo em memória: '),
+    retract(max_memoria(Y)),
+    write(Y).
+```
+
+### f)A
+
+#### Distância Manhattan
+* i)
+    * 6
+* ii)
+    * 12
+
+#### Distância Euclidiana
+* i)
+    * 6
+* ii)
+    * 12
