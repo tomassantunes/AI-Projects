@@ -1,0 +1,301 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[portuguese]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{graphicx}
+\usepackage{float}
+
+\title{Relatório 1º Trabalho Prático}
+\author{Bernardo Vitorino l48463, Daniel Barreiros l48452, Tomas Antunes l48511}
+
+\begin{document}
+\maketitle
+
+\section{Labirinto Agente A $\rightarrow$ Saida S}
+\subsection{O problema}
+\subsubsection{Espaço de resultados}
+
+\paragraph{}De forma a retratar o problema em questão, representamos os estados na forma \textbf{"\texttt{(X, Y)}"}, em que X é o numero da linha e Y é o numero da coluna de cada estada respetivamente. De forma a criar o estado inicial e final utilizámos este tipo de representação ficando na seguinte forma: \texttt{estado\_inicial((6, 1))} e \texttt{estado\_final((0, 4))}.
+
+\subsubsection{Restrições}
+\paragraph{} De forma a criar os bloqueios utilizamos a mesma representação que nos estados inicial e final, tendo sido criado um predicado que guarda as coordenadas dos mesmos. 
+
+\begin{itemize}
+  \item \texttt{bloqueado((0, 2))}
+  \item \texttt{bloqueado((1, 0))}
+  \item \texttt{bloqueado((1, 2))}
+  \item \texttt{bloqueado((1, 6))}
+  \item \texttt{bloqueado((3, 3))}
+  \item \texttt{bloqueado((3, 4))}
+  \item \texttt{bloqueado((3, 5))}
+\end{itemize}
+
+\subsubsection{Operadores de transição de estado}
+
+\paragraph{} Para representar as deslocações do agente (cima, baixo, esquerda, direita) utilizamos o predicado apresentado nas aulas praticas \texttt{op/4}. O predicado foi utilizado na forma \texttt{op(estado\_atual, operador, estado\_seguinte, custo)}. Este predicado valida o movimento do agente, verifica se a posição final do movimento não é um bloqueio, se excede os limites do problemas ou se já foi percorrido.
+\begin{verbatim}
+
+    nao_percorridos(A) :- 
+        \+ percorridos(A),
+        assertz(percorridos(A)).
+    
+    op((X, Y), sobe, (X, B), 1) :-
+        tamanho(T), Y < T, B is Y + 1, \+ bloqueado((X,B)), nao_percorridos((X,B)).
+    
+    op((X, Y), esquerda, (A, Y), 1) :-
+        X > 0, A is X - 1, \+ bloqueado((A,Y)), nao_percorridos((A,Y)).
+    
+    op((X, Y), desce, (X, B), 1) :-
+        Y > 0, B is Y - 1, \+ bloqueado((X,B)), nao_percorridos((X,B)).
+    
+    op((X, Y), direita, (A, Y), 1) :-
+        tamanho(T), X < T, A is X + 1, \+ bloqueado((A,Y)), nao_percorridos((A,Y)).
+\end{verbatim}
+
+\newpage
+\subsection{Algoritmos de pesquisa não informada}
+\paragraph{} De forma a obter o algoritmo de pesquisa não informada com melhor preformance entre a pesquisa em profundidade e a pesquisa em largura fizemos o teste com os estados inicial e final apresentados no enunciado. O algoritmo que obteve o melhor resultado foi o de profundidade apresentando os seguintes valores:
+
+\subsubsection{Análise dos algoritmos}
+\begin{table}[h]
+\centering
+\begin{tabular}{l|c|c|c|c}
+Algoritmo & Estados Visitados & Estados em Memória & Profundidade & Custo \\\hline
+Profundidade & 15 & 11 & 13 & 13 
+
+\end{tabular}
+\caption{\label{tab:pni} Resultados obtidos utilizando o algoritmo de Pesquisa em Profundidade.}
+\end{table}
+
+\subsubsection{Código em Prolog}
+\begin{verbatim}
+
+    pesquisa_profundidade([no(E,Pai,Op,C,P)|_],no(E,Pai,Op,C,P)) :- 
+        estado_final(E), inc.
+        
+    pesquisa_profundidade([E|R],Sol) :- 
+        inc, expande(E,Lseg),
+        insere_inicio(Lseg,R,LFinal),
+        length(LFinal, L), actmax(L),
+        pesquisa_profundidade(LFinal,Sol).
+\end{verbatim}
+
+\subsection{Heurísitcas}
+\subsubsection{Distância de Manhattan}
+\paragraph{} Como primeira heurística, foi utilizada a distância de Manhattan: $d((x1, y1), (x2, y2)) = |x1 - x2| + |y1 - y2|$.
+
+
+\begin{verbatim}
+    distancia_manhattan((X, Y), (W, Z), D) :-
+        X1 is X-W,
+        abs(X1, AX),
+        Y1 is Y-Z,
+        abs(Y1, AY),
+        D is AX+AY.  
+\end{verbatim}
+
+\subsubsection{Distância euclidiana}
+\paragraph{} Já a segunda heurística escolhida foi a distância euclidiana: $d((x1, y1), (x2, y2)) = \sqrt{(x1-x2)^2 + (y1-y2)^2}$.
+
+\begin{verbatim}
+    euclidean_distance((X1, Y1), (X2, Y2), R) :- 
+        R is sqrt((X2-X1)^2 + (Y2-Y1)^2). 
+\end{verbatim}
+
+\subsection{Algoritmos de pesquisa informada}
+\paragraph{} A análise dos algoritmos de pesquisa informada foi realizada utilizando os estados inicial e final do enunciado.
+
+\subsubsection{Análise dos algoritmos}
+\paragraph{} Após análise dos resultados obtidos pelos algoritmos A* e Greedy com as heurísticas mostradas anteriormente determinamos que o melhor algoritmo na resolução deste problema foi o Greedy, apresentado oos seguintes resultados:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{l|c|c|c|c}
+Algoritmo de Pesquisa & Estados Visitados & Estados em Memória & Profundidade & Custo \\\hline
+Greedy com dist. de Manhattan & 39 & 53 & 13 & 13 \\\hline
+Greedy com dist. euclidiana & 9 & 13 & 9 & 9 
+\end{tabular}
+\caption{\label{tab:pni}Resultados do algoritmo Greedy.}
+\end{table}
+
+\subsubsection{Código em Prolog}
+\begin{verbatim}
+    pesquisa_g([no(E,Pai,Op,C,HC,P)|_],no(E,Pai,Op,C,HC,P)) :-        
+        estado_final(E).
+        
+    pesquisa_g([E|R],Sol) :- 
+        inc, expande_g(E,Lseg),
+        insere_ordenado(Lseg,R,Resto), length(Resto,N), actmax(N),
+        pesquisa_g(Resto,Sol).
+\end{verbatim}
+
+\newpage
+
+\section{Labirinto Agente A leva Caixa C $\rightarrow$ Saída S}
+\subsection{O problema}
+\subsubsection{Espaço de resultados}
+\paragraph{} Para a representação do problema, os estados seguem todos a estrutura \textbf{"\texttt{(X, Y, A, B)}"}, em que X é o número da coluna e Y o número da linha em que se encontra o agente e A é o número da coluna e B o número da linha em que se encontra a caixa. Através desta representação, foi possível criar os estados inicial e final: \texttt{estado\_inicial((1, 6, 1, 5))} e \texttt{estado\_final((\_, \_, 4, 0))}.
+
+\subsubsection{Restrições}
+\paragraph{} As retrições seguem a mesma representação que o problema anterior e que os estados inicial e final, tido sido então criada uma "lista" de cláusulas:
+\begin{itemize}
+  \item \texttt{bloqueado((0, 1))}
+  \item \texttt{bloqueado((2, 0))}
+  \item \texttt{bloqueado((2, 1))}
+  \item \texttt{bloqueado((3, 3))}
+  \item \texttt{bloqueado((3, 4))}
+  \item \texttt{bloqueado((3, 5))}
+  \item \texttt{bloqueado((6, 1))}
+\end{itemize}
+
+\subsubsection{Operadores de transição de estado}
+\paragraph{} Para representar as deslocações do agente (cima, baixo, esquerda, direita) utilizamos o predicado apresentado nas aulas praticas \texttt{op/4}. O predicado foi utilizado na forma \texttt{op(estado\_atual, operador, estado\_seguinte, custo)}. Este predicado valida o movimento do agente, verifica se a posição final do movimento não é um bloqueio, se excede os limites do problemas ou se já foi percorrido.
+
+\begin{verbatim}
+    op((X, Y, A, B), cima, (X, Y1, A, B1), 1) :-
+        Y1 is Y - 1,
+        (iguais((X, Y1), (A, B)) -> (
+                B1 is B - 1,
+                lim(A, Y1),
+                \+ bloqueado((A, B1))
+            );
+            (
+                B1 is B,
+                lim(X, Y1),
+                \+ bloqueado((X, Y1))
+            )
+        ).
+    
+    op((X, Y, A, B), direita, (X1, Y, A1, B), 1) :-
+        X1 is X+1,
+        (iguais((X1, Y), (A, B)) -> (
+                A1 is A+1,
+                lim(A1, B), lim(X1, Y),
+                \+ bloqueado((A1, B))
+            );
+            (
+                A1 is A,
+                lim(X1, Y),
+                \+ bloqueado((X1, Y))
+            )
+        ).
+    
+    op((X, Y, A, B), baixo, (X, Y1, A, B1), 1) :-
+        Y1 is Y+1,
+        (iguais((X, Y1), (A, B)) -> (
+                B1 is B+1,
+                lim(A, B1), lim(X, Y1),
+                \+ bloqueado((A, B1))
+            );
+            (
+                B1 is B,
+                lim(X, Y1),
+                \+ bloqueado((X, Y1))
+            )
+        ).
+    
+    op((X, Y, A, B), esquerda, (X1, Y, A1, B), 1) :-
+        X1 is X-1,
+        (iguais((X1, Y), (A, B)) -> (
+                A1 is A-1,
+                lim(A1, B), lim(X1, Y),
+                \+ bloqueado((A1, B))
+            );
+            (
+                A1 is A,
+                lim(X1, Y),
+                \+ bloqueado((X1, Y))
+            )
+        ).
+\end{verbatim}
+
+\subsection{Algoritmos de pesquisa não informada}
+\paragraph{} Devido ao elevado número de nós que precisavam ser armazenados simultaneamente na memória tanto para o algorimo de pesquisa em largura como para o algorimo de pesquisa em profundidade decidimos utilizar um estado inicial diferente do estado inicial apresentado no enunciado. Optamos por realizar esta troca pois foi nos apresentado o erro \texttt{global stack overflow}. Assim sendo, utilizamos como estado inicial \texttt{(4, 6, 4, 5)}. 
+
+\subsubsection{Análise dos algoritmos}
+\paragraph{} Após a analise dos algoritmos nomeadamente os algoritmos de pesquisa em profundidade e pesquisa em largura, concluimos que o que obteve melhores resultados foi o algoritmo de pesquisa em profundidade.
+\begin{table}[h]
+\centering
+\begin{tabular}{l|c|c|c|c}
+Algoritmo & Estados Visitados & Estados em Memória & Profundidade & Custo \\\hline
+Profundidade & 6 & 12 & 5 & 5  
+\end{tabular}
+\caption{\label{tab:pni}Resultados obtidos através do algoritmo de Pesquisa em Profundidade.}
+\end{table}
+
+\subsubsection{Código em Prolog}
+\begin{verbatim}
+
+    pesquisa_profundidade([no(E,Pai,Op,C,P)|_],no(E,Pai,Op,C,P)) :- 
+        estado_final(E), inc.
+    pesquisa_profundidade([E|R],Sol) :- 
+        inc, expande(E,Lseg),
+        insere_inicio(Lseg,R,LFinal),
+        length(LFinal, L), actmax(L),
+        pesquisa_profundidade(LFinal,Sol).
+        
+\end{verbatim}
+
+\subsection{Heurísitcas}
+\subsubsection{Distância de Manhattan entre a caixa C e a saída S - heurística 1}
+\paragraph{} Como primeira heurística, foi utilizada a distância de Manhattan entre as posições da caixa C e da saída S: $d((x1, y1), (x2, y2)) = |x1 - x2| + |y1 - y2|$.
+
+\begin{verbatim}
+
+    distancia_manhattan((_, _, X, Y), (_, _, W, Z), D) :-
+        X1 is abs(X - W),
+        Y1 is abs(Y - Z),
+        D is X1+Y1.
+        
+\end{verbatim}
+
+\subsubsection{Distância Euclideana entre a caixa C e a saída S - heurística 2}
+\paragraph{} Já a segunda heurística escolhida foi a distância euclidiana entre a caixa C e a Saída S: $d((x1, y1), (x2, y2)) = \sqrt{(x1-x2)^2 + (y1-y2)^2}$.
+
+\begin{verbatim}
+
+    euclidean_distance((_, _, X, Y), (_, _, A, B), R) :- 
+        R is sqrt((X-A)^2 + (Y-B)^2).
+
+        
+\end{verbatim}
+
+
+\subsection{Algoritmos de pesquisa informada}
+\paragraph{} A análise dos algoritmos de pesquisa informada foi realizada utilizando os estados inicial e final do enunciado. Após análise dos resultados obtidos através dos algoritmos A* e Greedy concluímos que o mais eficiente foi o algoritmo Greedy.
+\subsubsection{Análise dos algoritmos}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|c|c|c|c}
+Algoritmo de Pesquisa & Estados Visitados & Estados em Memória & Profundidade & Custo \\\hline
+Greedy com heurística 1 & 269 & 38 & 32 & 32 \\\hline
+Greedy com heurística 2 & 269 & 38 & 32 & 32
+\end{tabular}
+\caption{\label{tab:pni}Análise dos algoritmos de pesquisa informada.}
+\end{table}
+
+\subsubsection{Código em Prolog}
+\begin{verbatim}
+    pesquisa_g(_, [no(E,Pai,Op,C,HC,P)|_], no(E,Pai,Op,C,HC,P)) :- 
+        estado_final(E), inc.
+    pesquisa_g(HEUR, [E|R], Sol) :- 
+        inc, expande_g(HEUR, E,Lseg), assertz(percorridos(E)),
+        insere_ordenado(Lseg,R,Resto), length(Resto,N), actmax(N),
+        pesquisa_g(HEUR, Resto, Sol).
+\end{verbatim}
+ 
+\section{Executar pesquisas}
+\paragraph{} Para executar o programa:
+\begin{itemize}
+  \item carregar o problema desejado (labirinto ou labirinto2);
+  \item chamar o predicado responśavel pela pesquisa, utilizando pesquisa\_p.  (profundidade) pesquisa\_g. (Greedy);
+\end{itemize}
+\end{document}
