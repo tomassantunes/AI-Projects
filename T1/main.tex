@@ -12,20 +12,20 @@
 \usepackage{graphicx}
 \usepackage{float}
 
-\title{Relatório 1º Trabalho Prático}
-\author{Bernardo Vitorino l48463, Daniel Barreiros l48452, Tomas Antunes l48511}
+\title{Relatório 1º Trabalho Prático - Inteligência Artifial}
+\author{Bernardo Vitorino l48463, Daniel Barreiros l48452, Tomás Antunes l48511}
 
 \begin{document}
 \maketitle
 
-\section{Labirinto Agente A $\rightarrow$ Saida S}
+\section{Labirinto - Agente A $\rightarrow$ Saida S}
 \subsection{O problema}
 \subsubsection{Espaço de resultados}
 
-\paragraph{}De forma a retratar o problema em questão, representamos os estados na forma \textbf{"\texttt{(X, Y)}"}, em que X é o numero da linha e Y é o numero da coluna de cada estada respetivamente. De forma a criar o estado inicial e final utilizámos este tipo de representação ficando na seguinte forma: \texttt{estado\_inicial((6, 1))} e \texttt{estado\_final((0, 4))}.
+\paragraph{}De forma a retratar o problema em questão, representamos os estados na forma \textbf{"\texttt{(X, Y)}"}, em que X é o número da linha e Y é o número da coluna de cada estada respetivamente. De forma a criar o estado inicial e final utilizámos este tipo de representação ficando na seguinte forma: \texttt{estado\_inicial((6, 1))} e \texttt{estado\_final((0, 4))}.
 
 \subsubsection{Restrições}
-\paragraph{} De forma a criar os bloqueios utilizamos a mesma representação que nos estados inicial e final, tendo sido criado um predicado que guarda as coordenadas dos mesmos. 
+\paragraph{} De forma a criar os bloqueios utilizámos a mesma representação que nos estados inicial e final tendo sido criado um predicado que guarda as coordenadas dos mesmos. 
 
 \begin{itemize}
   \item \texttt{bloqueado((0, 2))}
@@ -39,7 +39,7 @@
 
 \subsubsection{Operadores de transição de estado}
 
-\paragraph{} Para representar as deslocações do agente (cima, baixo, esquerda, direita) utilizamos o predicado apresentado nas aulas praticas \texttt{op/4}. O predicado foi utilizado na forma \texttt{op(estado\_atual, operador, estado\_seguinte, custo)}. Este predicado valida o movimento do agente, verifica se a posição final do movimento não é um bloqueio, se excede os limites do problemas ou se já foi percorrido.
+\paragraph{} Para representar as deslocações do agente (cima, baixo, esquerda, direita) utilizamos o predicado apresentado nas aulas praticas \texttt{op/4}. O predicado foi utilizado na forma \texttt{op(estado\_atual, operador, estado\_seguinte, custo)}. Este predicado valida o movimento do agente, verifica se a posição final do movimento não é um bloqueio, se excede os limites do problema ou se já foi percorrido.
 \begin{verbatim}
 
     nao_percorridos(A) :- 
@@ -61,7 +61,7 @@
 
 \newpage
 \subsection{Algoritmos de pesquisa não informada}
-\paragraph{} De forma a obter o algoritmo de pesquisa não informada com melhor preformance entre a pesquisa em profundidade e a pesquisa em largura fizemos o teste com os estados inicial e final apresentados no enunciado. O algoritmo que obteve o melhor resultado foi o de profundidade apresentando os seguintes valores:
+\paragraph{} De forma a obter o algoritmo de pesquisa não informada com melhor performance entre a pesquisa em profundidade e a pesquisa em largura fizemos o teste com os estados inicial e final apresentados no enunciado. O algoritmo que obteve o melhor resultado foi o algoritmo de pesquisa em profundidade apresentando os seguintes valores:
 
 \subsubsection{Análise dos algoritmos}
 \begin{table}[h]
@@ -89,8 +89,7 @@ Profundidade & 15 & 11 & 13 & 13
 
 \subsection{Heurísitcas}
 \subsubsection{Distância de Manhattan}
-\paragraph{} Como primeira heurística, foi utilizada a distância de Manhattan: $d((x1, y1), (x2, y2)) = |x1 - x2| + |y1 - y2|$.
-
+\paragraph{} Como primeira heurística foi utilizada a distância de Manhattan: $d((x1, y1), (x2, y2)) = |x1 - x2| + |y1 - y2|$.
 
 \begin{verbatim}
     distancia_manhattan((X, Y), (W, Z), D) :-
@@ -113,7 +112,7 @@ Profundidade & 15 & 11 & 13 & 13
 \paragraph{} A análise dos algoritmos de pesquisa informada foi realizada utilizando os estados inicial e final do enunciado.
 
 \subsubsection{Análise dos algoritmos}
-\paragraph{} Após análise dos resultados obtidos pelos algoritmos A* e Greedy com as heurísticas mostradas anteriormente determinamos que o melhor algoritmo na resolução deste problema foi o Greedy, apresentado oos seguintes resultados:
+\paragraph{} Após análise dos resultados obtidos pelos algoritmos A* e Greedy com as heurísticas mostradas anteriormente determinamos que o melhor algoritmo na resolução deste problema foi o Greedy, apresentado os seguintes resultados:
 
 \begin{table}[H]
 \centering
@@ -122,7 +121,7 @@ Algoritmo de Pesquisa & Estados Visitados & Estados em Memória & Profundidade &
 Greedy com dist. de Manhattan & 39 & 53 & 13 & 13 \\\hline
 Greedy com dist. euclidiana & 9 & 13 & 9 & 9 
 \end{tabular}
-\caption{\label{tab:pni}Resultados do algoritmo Greedy.}
+\caption{\label{tab:pni}Resultados do Algoritmo Greedy.}
 \end{table}
 
 \subsubsection{Código em Prolog}
@@ -138,13 +137,13 @@ Greedy com dist. euclidiana & 9 & 13 & 9 & 9
 
 \newpage
 
-\section{Labirinto Agente A leva Caixa C $\rightarrow$ Saída S}
+\section{Labirinto - Agente A leva Caixa C $\rightarrow$ Saída S}
 \subsection{O problema}
 \subsubsection{Espaço de resultados}
 \paragraph{} Para a representação do problema, os estados seguem todos a estrutura \textbf{"\texttt{(X, Y, A, B)}"}, em que X é o número da coluna e Y o número da linha em que se encontra o agente e A é o número da coluna e B o número da linha em que se encontra a caixa. Através desta representação, foi possível criar os estados inicial e final: \texttt{estado\_inicial((1, 6, 1, 5))} e \texttt{estado\_final((\_, \_, 4, 0))}.
 
 \subsubsection{Restrições}
-\paragraph{} As retrições seguem a mesma representação que o problema anterior e que os estados inicial e final, tido sido então criada uma "lista" de cláusulas:
+\paragraph{} As restrições seguem a mesma representação que o problema anterior e que os estados inicial e final tendo sido criada uma "lista" de cláusulas:
 \begin{itemize}
   \item \texttt{bloqueado((0, 1))}
   \item \texttt{bloqueado((2, 0))}
@@ -156,7 +155,7 @@ Greedy com dist. euclidiana & 9 & 13 & 9 & 9
 \end{itemize}
 
 \subsubsection{Operadores de transição de estado}
-\paragraph{} Para representar as deslocações do agente (cima, baixo, esquerda, direita) utilizamos o predicado apresentado nas aulas praticas \texttt{op/4}. O predicado foi utilizado na forma \texttt{op(estado\_atual, operador, estado\_seguinte, custo)}. Este predicado valida o movimento do agente, verifica se a posição final do movimento não é um bloqueio, se excede os limites do problemas ou se já foi percorrido.
+\paragraph{} Para representar as deslocações do agente (cima, baixo, esquerda, direita) utilizamos o predicado apresentado nas aulas praticas \texttt{op/4}. O predicado foi utilizado na forma \texttt{op(estado\_atual, operador, estado\_seguinte, custo)}. Este predicado valida o movimento do agente, verifica se a posição final do movimento não é um bloqueio, se excede os limites do problema ou se já foi percorrido.
 
 \begin{verbatim}
     op((X, Y, A, B), cima, (X, Y1, A, B1), 1) :-
@@ -217,10 +216,10 @@ Greedy com dist. euclidiana & 9 & 13 & 9 & 9
 \end{verbatim}
 
 \subsection{Algoritmos de pesquisa não informada}
-\paragraph{} Devido ao elevado número de nós que precisavam ser armazenados simultaneamente na memória tanto para o algorimo de pesquisa em largura como para o algorimo de pesquisa em profundidade decidimos utilizar um estado inicial diferente do estado inicial apresentado no enunciado. Optamos por realizar esta troca pois foi nos apresentado o erro \texttt{global stack overflow}. Assim sendo, utilizamos como estado inicial \texttt{(4, 6, 4, 5)}. 
+\paragraph{} Devido ao elevado número de nós que precisavam ser armazenados simultaneamente na memória tanto para o algoritmo de pesquisa em largura como para o algoritmo de pesquisa em profundidade decidimos utilizar um estado inicial diferente do estado inicial apresentado no enunciado. Optamos por realizar esta troca pois foi nos apresentado o erro \texttt{global stack overflow}. Assim sendo, utilizámos como estado inicial \texttt{(4, 6, 4, 5)}. 
 
 \subsubsection{Análise dos algoritmos}
-\paragraph{} Após a analise dos algoritmos nomeadamente os algoritmos de pesquisa em profundidade e pesquisa em largura, concluimos que o que obteve melhores resultados foi o algoritmo de pesquisa em profundidade.
+\paragraph{} Após a analise da performancedos dos algoritmos, nomeadamente os algoritmos de pesquisa em profundidade e pesquisa em largura, concluímos que o que obteve melhores resultados foi o algoritmo de pesquisa em profundidade.
 \begin{table}[h]
 \centering
 \begin{tabular}{l|c|c|c|c}
@@ -244,7 +243,7 @@ Profundidade & 6 & 12 & 5 & 5
 \end{verbatim}
 
 \subsection{Heurísitcas}
-\subsubsection{Distância de Manhattan entre a caixa C e a saída S - heurística 1}
+\subsubsection{Distância de Manhattan entre a caixa C e a saída S - Heurística 1}
 \paragraph{} Como primeira heurística, foi utilizada a distância de Manhattan entre as posições da caixa C e da saída S: $d((x1, y1), (x2, y2)) = |x1 - x2| + |y1 - y2|$.
 
 \begin{verbatim}
@@ -256,7 +255,7 @@ Profundidade & 6 & 12 & 5 & 5
         
 \end{verbatim}
 
-\subsubsection{Distância Euclideana entre a caixa C e a saída S - heurística 2}
+\subsubsection{Distância Euclideana entre a caixa C e a saída S - Heurística 2}
 \paragraph{} Já a segunda heurística escolhida foi a distância euclidiana entre a caixa C e a Saída S: $d((x1, y1), (x2, y2)) = \sqrt{(x1-x2)^2 + (y1-y2)^2}$.
 
 \begin{verbatim}
@@ -279,7 +278,7 @@ Algoritmo de Pesquisa & Estados Visitados & Estados em Memória & Profundidade &
 Greedy com heurística 1 & 269 & 38 & 32 & 32 \\\hline
 Greedy com heurística 2 & 269 & 38 & 32 & 32
 \end{tabular}
-\caption{\label{tab:pni}Análise dos algoritmos de pesquisa informada.}
+\caption{\label{tab:pni}Análise dos algoritmos de Pesquisa Informada.}
 \end{table}
 
 \subsubsection{Código em Prolog}
@@ -295,7 +294,7 @@ Greedy com heurística 2 & 269 & 38 & 32 & 32
 \section{Executar pesquisas}
 \paragraph{} Para executar o programa:
 \begin{itemize}
-  \item carregar o problema desejado (labirinto ou labirinto2);
-  \item chamar o predicado responśavel pela pesquisa, utilizando pesquisa\_p.  (profundidade) pesquisa\_g. (Greedy);
+  \item Carregar o problema desejado (labirinto ou labirinto2);
+  \item Chamar o predicado responśavel pela pesquisa, utilizando pesquisa\_p.  (profundidade) pesquisa\_g. (Greedy);
 \end{itemize}
 \end{document}
