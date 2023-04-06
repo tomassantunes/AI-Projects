@@ -27,32 +27,32 @@ ve_restricoes(E):-
     ver_colunas(E),
     ver_quadrantes(E).
 
-ver_linhas(e(_Nafect,[var((X,_Y), _D, V)|R])):-
+ver_linhas(e(_,[var((X,_Y), _D, V)|R])):-
     findall(V1,member(var((X,_),_,V1),R),L),
     todos_diff([V|L]).
   
-ver_colunas(e(_Nafect,[var((_X,Y), _D, V)|R])):-
+ver_colunas(e(_,[var((_X,Y), _D, V)|R])):-
     findall(V1,member(var((_,Y),_,V1),R),L),
     todos_diff([V|L]).
 
-ver_quadrantes(e(_,Afect)) :-
-    ver_quad(Afect, 1, 1, 3, Q1),
+ver_quadrantes(e(_,A)) :-
+    ver_quad(A, 1, 1, 3, Q1),
     todos_diff(Q1),
-    ver_quad(Afect, 1, 4, 6, Q2),
+    ver_quad(A, 1, 4, 6, Q2),
     todos_diff(Q2),
-    ver_quad(Afect, 1, 7, 9, Q3),
+    ver_quad(A, 1, 7, 9, Q3),
     todos_diff(Q3),
-    ver_quad(Afect, 4, 1, 3, Q4),
+    ver_quad(A, 4, 1, 3, Q4),
     todos_diff(Q4),
-    ver_quad(Afect, 4, 4, 6, Q5),
+    ver_quad(A, 4, 4, 6, Q5),
     todos_diff(Q5),
-    ver_quad(Afect, 4, 7, 9, Q6),
+    ver_quad(A, 4, 7, 9, Q6),
     todos_diff(Q6),
-    ver_quad(Afect, 7, 1, 3, Q7),
+    ver_quad(A, 7, 1, 3, Q7),
     todos_diff(Q7),
-    ver_quad(Afect, 7, 4, 6, Q8),
+    ver_quad(A, 7, 4, 6, Q8),
     todos_diff(Q8),
-    ver_quad(Afect, 7, 7, 9, Q9),
+    ver_quad(A, 7, 7, 9, Q9),
     todos_diff(Q9).
 
 ver_quad(L, X, Y, Y2, Q) :-
@@ -108,8 +108,8 @@ forward(E,Sol):-
 forCheck(e(Lni,[var(N,D,V)|Li]), e(Lnii, [var(N,D,V)|Li])) :- corta(V,Lni,Lnii).
 
 corta(_,[],[]).
-corta(V,[var(N,_D,_)|NAfect],[var(N,_DS,_)|NAfectS]):-  
-    corta(V, NAfect, NAfectS).
+corta(V,[var(N,_D,_)|NA],[var(N,_DS,_)|NAS]):-  
+    corta(V, NA, NAS).
 
 sudoku_back:- 
     estado_inicial(E0), 
