@@ -25,7 +25,7 @@ estado_inicial(e([var((1,1), [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], _),
                   var((3,4), [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], _),
                   var((4,4), [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], _)],[])).
 
-verifica_restricoes(e(_,I)):- verifica_diferentes(I), verifica_linhas(I), verifica_colunas(I), verifica_diagonais(I). 
+verifica_restricoes(e(_,I)):- nos(X), X \= 16; verifica_diferentes(I), verifica_linhas(I), verifica_colunas(I), verifica_diagonais(I). 
 
 verifica_diferentes([]).
 verifica_diferentes([V|I]):- diferentes(V, I), verifica_diferentes(I).
@@ -83,4 +83,4 @@ p:- estado_inicial(E0), back(E0,A),  esc(A).
 back(e([],A),A).
 back(E,Sol) :-
     sucessor(E,E1), inc, verifica_restricoes(E1),
-    forCheck(E1,E2), back(E2,Sol).
+    forCheck(E1, E2), back(E1,Sol).
