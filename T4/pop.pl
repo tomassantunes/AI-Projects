@@ -15,10 +15,8 @@ n(3).
 % plano_ini(P) constroi o plano inicial dados os estados inicial e final
 
 
-plano_ini(p([s1-op(inicial,[],EstadoIni,[]),
-s2-op(final,EstadoFin,[],[])],[m(s1,s2)],[]))
-:-estado_inicial(EstadoIni),
-estado_final(EstadoFin).
+plano_ini(p([s1-op(inicial,[],EstadoIni,[]),s2-op(final,EstadoFin,[],[])],[m(s1,s2)],[])) :- 
+    estado_inicial(EstadoIni), estado_final(EstadoFin).
 
 
 % este predicado retorna um plano linearizado
