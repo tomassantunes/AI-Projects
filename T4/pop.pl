@@ -111,16 +111,14 @@ nome(A,X,L,L):- member(n(X,A),L),!.
 nome(A,X,L,[n(X,A)|L]).
 
 ve_consistente([]).
-ve_consistente([m(A,B)|R]):- A#>=0, A #=< 30, B#>=0, B #=<30, A #< B,
-ve_consistente(R).
+ve_consistente([m(A,B)|R]):- A#>=0, A #=< 30, B#>=0, B #=<30, A #< B, ve_consistente(R).
 
-lineariza(p(Passos,Ordem,_Links),P):-
-renomeia(Ordem,[],OrdemVar,Nomes),
-length(Nomes,N), member(n(X,s2),Nomes), X#>=0, X #=< N,
-ve_consistente(OrdemVar),variaveis(Nomes,Vars),
-fd_labelingff(Vars),
-sort(Nomes,Ord),
-plano_ord(Ord,Passos,P).
+lineariza(p(Passos,Ordem,_Links),P):- renomeia(Ordem,[],OrdemVar,Nomes),
+                                      length(Nomes,N), member(n(X,s2),Nomes), X#>=0, X #=< N,
+                                      ve_consistente(OrdemVar),variaveis(Nomes,Vars),
+                                      fd_labelingff(Vars),
+                                      sort(Nomes,Ord),
+                                      plano_ord(Ord,Passos,P).
 
 variaveis([],[]).
 variaveis([n(X,_)|R],[X|S]):- variaveis(R,S).
