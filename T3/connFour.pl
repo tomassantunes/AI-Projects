@@ -424,13 +424,13 @@ diagonais([[_,_,_,_,_,_],
            [X,_,_,_,_,_]],X) :- X \= v.
 
 cheio([L1,L2,L3,L4,L5,L6,L7]) :-
-    append(L1, L2, L12),
-    append(L12, L3, L123),
-    append(L123, L4, L1234),
-    append(L1234, L5, L12345),
-    append(L12345, L6, L123456),
-    append(L123456, L7, L1234567),
-    \+ member(v, L1234567).
+    \+member(v, L1),
+    \+member(v, L2),
+    \+member(v, L3),
+    \+member(v, L4),
+    \+member(v, L5),
+    \+member(v, L6),
+    \+member(v, L7).
 
 %função de utilidade, retorna o valor dos estados terminais, 1 ganha -1 perde
 valor(G, 1) :- linhas(G,x).
