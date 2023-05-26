@@ -15,8 +15,10 @@ n(3).
 % plano_ini(P) constroi o plano inicial dados os estados inicial e final
 
 
-plano_ini(p([s1-op(inicial,[],EstadoIni,[]),s2-op(final,EstadoFin,[],[])],[m(s1,s2)],[])) :- 
-    estado_inicial(EstadoIni), estado_final(EstadoFin).
+plano_ini(p([s1-op(inicial,[],EstadoIni,[]),
+s2-op(final,EstadoFin,[],[])],[m(s1,s2)],[]))
+:-estado_inicial(EstadoIni),
+estado_final(EstadoFin).
 
 
 % este predicado retorna um plano linearizado
@@ -58,7 +60,7 @@ member(C, Add).
 escolheSk(p(Passos,Ordem,Links),S,C,p([Sk-op(N,Cond,Add,Del)|Passos],
 [m(Sk,S),m(Sk,s2),m(s1,Sk)|Ordem],
 [link(Sk,S,C)|Links])):-
-novo(Sk),!,length(Passos,M),M<18,!, 
+novo(Sk),!,length(Passos,M),M<5,!, 
 accao(N,Cond,Add,Del),
 member(C, Add).
 
@@ -109,14 +111,16 @@ nome(A,X,L,L):- member(n(X,A),L),!.
 nome(A,X,L,[n(X,A)|L]).
 
 ve_consistente([]).
-ve_consistente([m(A,B)|R]):- A#>=0, A #=< 30, B#>=0, B #=<30, A #< B, ve_consistente(R).
+ve_consistente([m(A,B)|R]):- A#>=0, A #=< 30, B#>=0, B #=<30, A #< B,
+ve_consistente(R).
 
-lineariza(p(Passos,Ordem,_Links),P):- renomeia(Ordem,[],OrdemVar,Nomes),
-                                      length(Nomes,N), member(n(X,s2),Nomes), X#>=0, X #=< N,
-                                      ve_consistente(OrdemVar),variaveis(Nomes,Vars),
-                                      fd_labelingff(Vars),
-                                      sort(Nomes,Ord),
-                                      plano_ord(Ord,Passos,P).
+lineariza(p(Passos,Ordem,_Links),P):-
+renomeia(Ordem,[],OrdemVar,Nomes),
+length(Nomes,N), member(n(X,s2),Nomes), X#>=0, X #=< N,
+ve_consistente(OrdemVar),variaveis(Nomes,Vars),
+fd_labelingff(Vars),
+sort(Nomes,Ord),
+plano_ord(Ord,Passos,P).
 
 variaveis([],[]).
 variaveis([n(X,_)|R],[X|S]):- variaveis(R,S).
