@@ -4,7 +4,7 @@ g(Jogo):- [Jogo], estado_inicial(Ei), minimax_decidir(Ei,Op), write(Op),nl.
 % minimax_decidir(Estado, MelhorJogada)
 
 % se é estado terminal não há jogada 
-minimax_decidir(Ei,terminou):- terminal(Ei).
+minimax_decidir(Ei,terminou):- terminal(Ei), write(Ei).
 
 %Para cada estado sucessor de Ei calcula o valor minimax do estado
 %Opf é o operador (jogada) que tem maior valor

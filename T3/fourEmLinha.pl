@@ -6,14 +6,24 @@
 % Ps: Pieces in this column
 empty(-).
 
-estado_inicial(e([col(1,yes, empty, 0, Empty),
-                  col(2,yes, empty, 0, Empty),
-                  col(3,yes, empty, 0, Empty), 
-                  col(4,yes, empty, 0, Empty),
-                  col(5,yes, empty, 0, Empty),
-                  col(6,yes, empty, 0, Empty)])).
+estado_inicial(e([col(1, yes, empty, 0, Empty),
+                  col(2, yes, empty, 0, Empty),
+                  col(3, yes, empty, 0, Empty), 
+                  col(4, yes, empty, 0, Empty),
+                  col(5, yes, empty, 0, Empty),
+                  col(6, yes, empty, 0, Empty)])).
 
-terminal(Board, Player):- (four_in_a_row(Board, Player) ; diagonal(Board, Player)).
+terminal(Player, Board) :-
+  (   member(col(_,_,Player,N,_), Board), N #>= 4
+  ;   un_col(Board, Board1),
+      (   four_in_a_row(Board1, Player)
+      ;   diagonal(Board1, Player)
+      )
+  ).
+
+un_col([], []).
+un_col([col(_,_,_,_,Cs)|Rest], [Cs|Css]) :-  un_col(Rest, Css).
+
 
 four_in_a_row([Col1,Col2,Col3,Col4|Cs], Player):-
     (   four_in_a_row(Col1, Col2, Col3, Col4, Player)
@@ -47,3 +57,14 @@ diagonal_up([Col1,Col2,Col3,Col4|_], Player) :-
         Col2 = [_,_|Rot2],
         Col3 = [_|Rot3],
         four_in_a_row(Rot1, Rot2, Rot3, Col4, Player).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Each possible move is simply represented by its column number.
+% The score of each move is:
+
+% - positive if x wins by this move
+% - zero if no decision is reached yet
+% - negative if o wins.
+
+valor().
