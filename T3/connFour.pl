@@ -385,7 +385,17 @@ valor(G, -1) :- colunas(G,o).
 valor(G, -1) :- diagonais(G,o).
 valor(_, 0).
 
-op(E, joga(C, J), ES):- C >= 1 , C =< 7,
+op(E, joga(C, J), ES):- C >= 1 , C =< 6,
     jogada_valida(E, jogada(C, J), ES).
 
-jogada_valida([C1,C2,C3,C4,C5,C6], jogada, Ex):-
+jogada_valida([C1,C2,C3,C4,C5,C6], jogada(1, J), Ex):-
+        coloca1(C1, J, C11).
+
+
+coloca1([v, P | Resto], J, [J, P | Resto]) :- P \= v.
+coloca1([v, v, P | Resto], J, [v,J,P |Resto]) :- P \= v.
+coloca1([v, v, v, P | Resto], J, [v, v, J, P | Resto]) :- P \= v.
+coloca1([v, v, v, v, P | Resto], J, [v, v, v, J, P | Resto]) :- P \= v.
+coloca1([v, v, v, v, v, P | Resto], J, [v, v, v, v, J, P | Resto]) :- P \= v.
+coloca1([v, v, v, v, v, v, P], J, [v, v, v, v, v, J , P]):- P \= v.
+coloca1([v, v, v, v, v, v, v], J, [v, v, v, v, v, v , J]).
