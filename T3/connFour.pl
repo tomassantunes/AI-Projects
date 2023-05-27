@@ -377,19 +377,29 @@ cheio([L1,L2,L3,L4,L5,L6,L7]) :-
     \+member(v, L7).
 
 %função de utilidade, retorna o valor dos estados terminais, 1 ganha -1 perde
-valor(G, 1) :- linhas(G,x).
-valor(G, 1) :- colunas(G,x).
-valor(G, 1) :- diagonais(G,x).
-valor(G, -1) :- linhas(G,o).
-valor(G, -1) :- colunas(G,o).
-valor(G, -1) :- diagonais(G,o).
-valor(_, 0).
+valor(G, 1, _) :- linhas(G,x).
+valor(G, 1, _) :- colunas(G,x).
+valor(G, 1, _) :- diagonais(G,x).
+valor(G, -1, _) :- linhas(G,o).
+valor(G, -1, _) :- colunas(G,o).
+valor(G, -1, _) :- diagonais(G,o).
+valor(_, 0, _).
 
-op(E, joga(C, J), ES):- C >= 1 , C =< 6,
+op1(E, joga(C, J), ES):- fd_domain(C, [1,2,3,4,5,6]), (J = x; J = o),
     jogada_valida(E, jogada(C, J), ES).
 
-jogada_valida([C1,C2,C3,C4,C5,C6], jogada(1, J), Ex):-
-        coloca1(C1, J, C11).
+jogada_valida([C1,C2,C3,C4,C5,C6], jogada(1, J), [C11,C2,C3,C4,C5,C6]):-
+    coloca1(C1, J, C11).
+jogada_valida([C1,C2,C3,C4,C5,C6], jogada(2, J), [C1,C22,C3,C4,C5,C6]):-
+    coloca1(C2, J, C22).
+jogada_valida([C1,C2,C3,C4,C5,C6], jogada(3, J), [C1,C2,C33,C4,C5,C6]):-
+    coloca1(C3, J, C33).
+jogada_valida([C1,C2,C3,C4,C5,C6], jogada(4, J), [C1,C2,C3,C44,C5,C6]):-
+    coloca1(C4, J, C44).
+jogada_valida([C1,C2,C3,C4,C5,C6], jogada(5, J), [C1,C2,C3,C4,C55,C6]):-
+    coloca1(C5, J, C55).
+jogada_valida([C1,C2,C3,C4,C5,C6], jogada(6, J), [C1,C2,C3,C4,C5,C66]):-
+    coloca1(C6, J, C66).
 
 
 coloca1([v, P | Resto], J, [J, P | Resto]) :- P \= v.
@@ -397,5 +407,5 @@ coloca1([v, v, P | Resto], J, [v,J,P |Resto]) :- P \= v.
 coloca1([v, v, v, P | Resto], J, [v, v, J, P | Resto]) :- P \= v.
 coloca1([v, v, v, v, P | Resto], J, [v, v, v, J, P | Resto]) :- P \= v.
 coloca1([v, v, v, v, v, P | Resto], J, [v, v, v, v, J, P | Resto]) :- P \= v.
-coloca1([v, v, v, v, v, v, P], J, [v, v, v, v, v, J , P]):- P \= v.
-coloca1([v, v, v, v, v, v, v], J, [v, v, v, v, v, v , J]).
+coloca1([v, v, v, v, v, v, P], J, [v, v, v, v, v, J, P]) :- P \= v.
+coloca1([v, v, v, v, v, v, v], J, [v, v, v, v, v, v, J]).
