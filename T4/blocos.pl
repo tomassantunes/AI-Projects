@@ -19,5 +19,5 @@ estado_inicial([vizinho(0,1), vizinho(1,0), vizinho(1,2), vizinho(2,1),
                 bloco_na_casa(a,0), bloco_na_casa(b,1), bloco_na_casa(c,2), casa_livre(3)]).
 
 estado_final([vizinho(0,1), vizinho(1,0), vizinho(1,2), vizinho(2,1),
-            vizinho(2,3), vizinho(3,2), mao_livre, robot_na_casa(0), casa_livre(0), 
-            bloco_na_casa(c,1), bloco_na_casa(a,2), bloco_na_casa(b, 3)]).
+              vizinho(2,3), vizinho(3,2), mao_livre, robot_na_casa(0),
+              bloco_na_casa(c,1), bloco_na_casa(a,2), bloco_na_casa(b, 3), casa_livre(0)]).
