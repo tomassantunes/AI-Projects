@@ -440,3 +440,6 @@ valor(G, -1) :- linhas(G,o).
 valor(G, -1) :- colunas(G,o).
 valor(G, -1) :- diagonais(G,o).
 valor(_, 0).
+
+op(E, J, joga(X,Y), ES):-
+    jogada_valida(E, J, joga(X,Y), ES).
