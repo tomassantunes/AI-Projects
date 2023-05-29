@@ -13,7 +13,12 @@
 %[v,o,o,x,x,o,o]
 %[o,x,x,o,o,x,x]
 
-estado_inicial(e([[v,v,v,v,x,x,x],[v,x,x,o,o,x,x],[v,o,o,x,x,o,o],[v,x,x,o,o,x,x],[v,o,o,x,x,o,o], [v,x,x,o,o,x,x]],x)).
+estado_inicial(e([[v,v,v,v,x,x,x],
+                  [v,x,x,o,o,x,x],
+                  [v,o,x,x,o,o,o],
+                  [v,x,x,o,o,x,x],
+                  [v,o,o,x,x,o,o], 
+                  [v,x,x,o,o,x,x]],x)).
 
 % terminal(G) :- write(G), nl, colunas(G).
 % terminal(G) :- write(G), nl, linhas(G).
@@ -388,12 +393,8 @@ cheio(e([C1,C2,C3,C4,C5,C6],_)) :-
     \+member(v, C6).
 
 %função de utilidade, retorna o valor dos estados terminais, 1 ganha -1 perde
-valor(e(G, x), 1, _) :- linhas(e(G, x)).
-valor(e(G, x), 1, _) :- colunas(e(G, x)).
-valor(e(G, x), 1, _) :- diagonais(e(G, x)).
-valor(e(G, o), -1, _) :- linhas(e(G, o)).
-valor(e(G, o), -1, _) :- colunas(e(G, o)).
-valor(e(G, o), -1, _) :- diagonais(e(G, o)).
+valor(e(G, x), 1, _) :- linhas(e(G, x)); colunas(e(G, x)); diagonais(e(G, x)).
+valor(e(G, o), -1, _) :- linhas(e(G, o)); colunas(e(G, o)); diagonais(e(G, o)).
 valor(e(G, _), 0, _) :- verifica_continua(G).
 
 verifica_continua(G) :-
@@ -401,22 +402,21 @@ verifica_continua(G) :-
 
 inv(x,o).
 inv(o,x).
-op1(e(Board, J), joga(C, J), e(Board1, J1)):- inv(J,J1), fd_domain(C, [1,2,3,4,5,6]),
+op1(e(Board, J), joga(C, J), e(Board1, J1)):- fd_domain(C, [1,2,3,4,5,6]),
     jogada_valida(e(Board, J), jogada(C, J), e(Board1, J1)).
 
-jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(1, J), e([C11,C2,C3,C4,C5,C6],_)):-
-    coloca1(C1, J, C11).
-jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(2, J), e([C1,C22,C3,C4,C5,C6],_)):-
-    coloca1(C2, J, C22).
-jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(3, J), e([C1,C2,C33,C4,C5,C6],_)):-
-    coloca1(C3, J, C33).
-jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(4, J), e([C1,C2,C3,C44,C5,C6],_)):-
-    coloca1(C4, J, C44).
-jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(5, J), e([C1,C2,C3,C4,C55,C6],_)):-
-    coloca1(C5, J, C55).
-jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(6, J), e([C1,C2,C3,C4,C5,C66],_)):-
-    coloca1(C6, J, C66).
-
+jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(1, J), e([C11,C2,C3,C4,C5,C6],J1)):-
+    coloca1(C1, J, C11), inv(J, J1).
+jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(2, J), e([C1,C22,C3,C4,C5,C6],J2)):-
+    coloca1(C2, J, C22), inv(J, J2).
+jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(3, J), e([C1,C2,C33,C4,C5,C6],J3)):-
+    coloca1(C3, J, C33), inv(J, J3).
+jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(4, J), e([C1,C2,C3,C44,C5,C6],J4)):-
+    coloca1(C4, J, C44), inv(J, J4).
+jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(5, J), e([C1,C2,C3,C4,C55,C6],J5)):-
+    coloca1(C5, J, C55), inv(J, J5).
+jogada_valida(e([C1,C2,C3,C4,C5,C6],J), jogada(6, J), e([C1,C2,C3,C4,C5,C66],J6)):-
+    coloca1(C6, J, C66), inv(J, J6).
 
 coloca1([v, P | Resto], J, [J, P | Resto]) :- P \= v.
 coloca1([v, v, P | Resto], J, [v,J,P |Resto]) :- P \= v.
