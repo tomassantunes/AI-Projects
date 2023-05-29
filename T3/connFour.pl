@@ -11,9 +11,9 @@
 %[v,o,o,x,x,o,o]
 %[v,x,x,o,o,x,x]
 %[v,o,o,x,x,o,o]
-%[v,x,x,o,o,x,x]
+%[o,x,x,o,o,x,x]
 
-estado_inicial(e([[v,v,v,v,x,x,x],[v,x,x,o,o,x,x],[v,o,o,x,x,o,o],[v,x,x,o,o,x,x],[v,o,o,x,x,o,o], [v,x,x,o,o,x,x]],o)).
+estado_inicial(e([[v,v,v,v,x,x,x],[v,x,x,o,o,x,x],[v,o,o,x,x,o,o],[v,x,x,o,o,x,x],[v,o,o,x,x,o,o], [v,x,x,o,o,x,x]],x)).
 
 % terminal(G) :- write(G), nl, colunas(G).
 % terminal(G) :- write(G), nl, linhas(G).

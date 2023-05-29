@@ -9,18 +9,17 @@ minimax_decidir(Ei,terminou):- terminal(Ei).
 %Para cada estado sucessor de Ei calcula o valor minimax do estado
 %Opf é o operador (jogada) que tem maior valor
 
-minimax_decidir(Ei,Opf):- findall(Es-Op, op1(Ei,Op,Es),L),
-                          findall(Vc-Op,(member(E-Op,L), 
-                          minimax_valor(E,Vc,1)),L1), 
+minimax_decidir(Ei,Opf):- write(minimax_decidir), nl, findall(Es-Op, op1(Ei,Op,Es), L),
+                          findall(Vc-Op,(member(E-Op,L), minimax_valor(E,Vc,1)), L1), 
                           escolhe_max(L1,Opf).
 
 % se um estado é terminal o valor é dado pela função de utilidade
-minimax_valor(Ei,Val,P):- terminal(Ei), valor(Ei,Val,P).
+minimax_valor(Ei,Val,P):- write(minimax_valor_1), nl, terminal(Ei), valor(Ei,Val,P).
 
 %Se o estado não é terminal o valor é:
 % -se a profundidade é par, o maior valor dos sucessores de Ei
 % -se aprofundidade é impar o menor valor dos sucessores de Ei
-minimax_valor(Ei,Val,P):- findall(Es,op1(Ei,_,Es),L),
+minimax_valor(Ei,Val,P):- write(minimax_valor_2), nl, findall(Es,op1(Ei,_,Es),L),
                           P1 is P+1,
                           findall(Val1,(member(E,L),minimax_valor(E,Val1,P1)),V), seleciona_valor(V,P,Val).
 

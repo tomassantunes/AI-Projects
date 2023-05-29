@@ -15,8 +15,7 @@ n(3).
 % plano_ini(P) constroi o plano inicial dados os estados inicial e final
 
 
-plano_ini(p([s1-op(inicial,[],EstadoIni,[]),s2-op(final,EstadoFin,[],[])],[m(s1,s2)],[])) :- 
-    estado_inicial(EstadoIni), estado_final(EstadoFin).
+plano_ini(p([s1-op(inicial,[],EstadoIni,[]),s2-op(final,EstadoFin,[],[])],[m(s1,s2)],[])) :- estado_inicial(EstadoIni), estado_final(EstadoFin).
 
 
 % este predicado retorna um plano linearizado
@@ -30,7 +29,7 @@ plano(P):- plano_ini(Pi), pop(Pi,P2), lineariza(P2,P).
 pop(Pi,P):- escolheCi(Pi,Si,Ci,Pj),!,
 escolheSk(Pj,Si,Ci,Pk),
 resolveAmeacas(Pk,Pl),
-consistentep(Pl),
+consistentep(Pl), write(Pl), nl, nl,
 pop(Pl,P).
 
 pop(P,P).
@@ -58,7 +57,7 @@ member(C, Add).
 escolheSk(p(Passos,Ordem,Links),S,C,p([Sk-op(N,Cond,Add,Del)|Passos],
 [m(Sk,S),m(Sk,s2),m(s1,Sk)|Ordem],
 [link(Sk,S,C)|Links])):-
-novo(Sk),!,length(Passos,M),M<18,!, 
+novo(Sk),!,length(Passos,M),M<8,!, 
 accao(N,Cond,Add,Del),
 member(C, Add).
 
@@ -74,7 +73,7 @@ resolveAmeacas(p(Passos,[Rest|Ordem],Links),P).
 
 resolveAmeacas(P,P).
 
-%S3 ameaca o link(S1,S2,C) se S3 tem C na delete list e S1<S3<S2
+%S3 ameaca o link(S1,S2,C) se S3 tem C na delete list e S1<S3<S2  write(ameaca), write("("), write(S1), write(","), write(S2),write(","), write(S3), write(","), write(Ord), write(")"),nl, 
 ameaca(S1,S2,S3,Ord):- consistente([m(S1,S3),m(S3,S2)|Ord]).
 
 
@@ -111,7 +110,7 @@ nome(A,X,L,[n(X,A)|L]).
 ve_consistente([]).
 ve_consistente([m(A,B)|R]):- A#>=0, A #=< 30, B#>=0, B #=<30, A #< B, ve_consistente(R).
 
-lineariza(p(Passos,Ordem,_Links),P):- renomeia(Ordem,[],OrdemVar,Nomes),
+lineariza(p(Passos,Ordem,_Links),P):- renomeia(Ordem,[],OrdemVar,Nomes), write(_Links),nl,
                                       length(Nomes,N), member(n(X,s2),Nomes), X#>=0, X #=< N,
                                       ve_consistente(OrdemVar),variaveis(Nomes,Vars),
                                       fd_labelingff(Vars),
