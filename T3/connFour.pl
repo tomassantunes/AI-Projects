@@ -388,13 +388,16 @@ cheio(e([C1,C2,C3,C4,C5,C6],_)) :-
     \+member(v, C6).
 
 %função de utilidade, retorna o valor dos estados terminais, 1 ganha -1 perde
-valor(e(G, x), 1, _) :- linhas(G).
-valor(e(G, x), 1, _) :- colunas(G).
-valor(e(G, x), 1, _) :- diagonais(G).
-valor(e(G, o), -1, _) :- linhas(G).
-valor(e(G, o), -1, _) :- colunas(G).
-valor(e(G, o), -1, _) :- diagonais(G).
-valor(_, 0, _).
+valor(e(G, x), 1, _) :- linhas(e(G, x)).
+valor(e(G, x), 1, _) :- colunas(e(G, x)).
+valor(e(G, x), 1, _) :- diagonais(e(G, x)).
+valor(e(G, o), -1, _) :- linhas(e(G, o)).
+valor(e(G, o), -1, _) :- colunas(e(G, o)).
+valor(e(G, o), -1, _) :- diagonais(e(G, o)).
+valor(e(G, _), 0, _) :- verifica_continua(G).
+
+verifica_continua(G) :-
+    \+ linhas(G), \+ colunas(G), \+ diagonais(G).
 
 inv(x,o).
 inv(o,x).
