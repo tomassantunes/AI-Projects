@@ -18,7 +18,7 @@ estado_inicial(e([[v,v,v,v,x,x,x],
                   [v,o,x,x,o,o,o],
                   [v,x,x,o,o,x,x],
                   [v,o,o,x,x,o,o], 
-                  [v,x,x,o,o,x,x]],x)).
+                  [v,v,o,o,o,x,x]],x)).
 
 % terminal(G) :- write(G), nl, colunas(G).
 % terminal(G) :- write(G), nl, linhas(G).
@@ -393,9 +393,9 @@ cheio(e([C1,C2,C3,C4,C5,C6],_)) :-
     \+member(v, C6).
 
 %função de utilidade, retorna o valor dos estados terminais, 1 ganha -1 perde
-valor(e(G, x), 1, _) :- linhas(e(G, x)); colunas(e(G, x)); diagonais(e(G, x)).
-valor(e(G, o), -1, _) :- linhas(e(G, o)); colunas(e(G, o)); diagonais(e(G, o)).
-valor(e(G, _), 0, _) :- verifica_continua(G).
+valor(e(G, o), 1, _) :- linhas(e(G, o)); colunas(e(G, o)); diagonais(e(G, o)).
+valor(e(G, x), -1, _) :- linhas(e(G, x)); colunas(e(G, x)); diagonais(e(G, x)).
+valor(G, 0, _) :- verifica_continua(G).
 
 verifica_continua(G) :-
     \+ linhas(G), \+ colunas(G), \+ diagonais(G).
