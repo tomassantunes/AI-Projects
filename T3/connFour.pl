@@ -5,7 +5,6 @@
 %                 [v,v,v,v,v,v,v], % o tomás esteve aqui
 %                 [v,v,v,v,v,v,v]],o)).
 
-
 %[v,v,v,v,x,x,x]
 %[v,x,x,o,o,x,x]
 %[v,o,o,x,x,o,o]
@@ -13,17 +12,20 @@
 %[v,o,o,x,x,o,o]
 %[o,x,x,o,o,x,x]
 
-estado_inicial(e([[v,v,v,v,x,x,x],
-                  [v,x,x,o,o,x,x],
-                  [v,o,x,x,o,o,o],
-                  [v,x,x,o,o,x,x],
-                  [v,o,o,x,x,o,o], 
-                  [v,v,o,o,o,x,x]],x)).
+% estado_inicial(e([[v,v,v,v,x,x,x],
+%                   [v,x,x,o,o,x,x],
+%                   [v,o,x,x,o,o,o],
+%                   [v,x,x,o,o,x,x],
+%                   [v,o,o,x,x,o,o], 
+%                   [v,v,o,o,o,x,x]],x)).
 
-% terminal(G) :- write(G), nl, colunas(G).
-% terminal(G) :- write(G), nl, linhas(G).
-% terminal(G) :- write(G), nl, diagonais(G).
-% terminal(G) :- write(G), nl, cheio(G). 
+estado_inicial(e([[x,x,x,o,x,o,x],
+                  [v,o,x,x,o,x,o],
+                  [o,x,o,o,o,x,x],
+                  [v,x,x,x,x,o,o],
+                  [o,x,o,o,o,x,x], 
+                  [o,x,v,x,x,o,o]],o)).
+
 
 terminal(G) :- colunas(G).
 terminal(G) :- linhas(G).
