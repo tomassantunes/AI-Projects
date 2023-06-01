@@ -71,7 +71,6 @@ valor(G, 0, _) :- verifica_continua(G).
 verifica_continua(G) :-
     \+ linhas(G), \+ colunas(G), \+ diagonais(G).
 
-% oper(estado,jogador,jogada,estado seguinte)
 inv(x,o).
 inv(o,x).
 op1(e(Board, J), joga(C, J), e(Board1, J1)):- fd_domain(C, [1,2,3,4]),

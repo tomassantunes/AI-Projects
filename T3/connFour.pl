@@ -2,15 +2,8 @@
 %                 [v,v,v,v,v,v,v],
 %                 [v,v,v,v,v,v,v],
 %                 [v,v,v,v,v,v,v],
-%                 [v,v,v,v,v,v,v], % o tomás esteve aqui
+%                 [v,v,v,v,v,v,v], 
 %                 [v,v,v,v,v,v,v]],o)).
-
-%[v,v,v,v,x,x,x]
-%[v,x,x,o,o,x,x]
-%[v,o,o,x,x,o,o]
-%[v,x,x,o,o,x,x]
-%[v,o,o,x,x,o,o]
-%[o,x,x,o,o,x,x]
 
 % estado_inicial(e([[v,v,v,v,x,x,x],
 %                   [v,x,x,o,o,x,x],
